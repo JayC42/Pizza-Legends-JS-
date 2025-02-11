@@ -1,9 +1,9 @@
 class OverworldMap {
     constructor(config) {
         this.gameObjects = config.gameObjects
+        this.walls = config.walls || {};
 
         // Define the image layers in the game world 
-        
         this.lowerImage = new Image();
         this.lowerImage.src = config.lowerSrc;    
         
@@ -12,11 +12,23 @@ class OverworldMap {
         
     }
 
-    drawLowerImage(ctx) {
-        ctx.drawImage(this.lowerImage, 0, 0)
+    drawLowerImage(ctx, cameraPerson) {
+        ctx.drawImage(
+            this.lowerImage,
+            utils.withGrid(10.5) - cameraPerson.x, 
+            utils.withGrid(6) - cameraPerson.y
+        )
     }   
-    drawUpperImage(ctx) {
-        ctx.drawImage(this.upperImage, 0, 0)
+    drawUpperImage(ctx, cameraPerson) {
+        ctx.drawImage(
+            this.upperImage, 
+            utils.withGrid(10.5) - cameraPerson.x, 
+            utils.withGrid(6) - cameraPerson.y)
+    }
+
+    isSpaceTaken(currentX, currentY, direction) {
+        const {x,y} = utils.nextPosition(currentX, currentY, direction);
+        return this.walls[`${x},${y}`] || false;
     }
 }
 window.OverworldMaps = {
@@ -34,6 +46,13 @@ window.OverworldMaps = {
                 y: utils.withGrid(9),
                 src: "/images/characters/people/npc1.png"
             })
+        },
+        walls: {
+            //"16,16": true
+            [utils.asGridCoord(7,6)] : true, 
+            [utils.asGridCoord(8,6)] : true,
+            [utils.asGridCoord(7,7)] : true,
+            [utils.asGridCoord(8,7)] : true,
         }
     },
     Kitchen: {
