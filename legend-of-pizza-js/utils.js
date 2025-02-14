@@ -9,16 +9,20 @@ const utils = {
         let x = initialX; 
         let y = initialY;
         const size = 16; 
-        
+
         if (direction === "left") {
             x -= size;
         } else if (direction === "right") {
             x += size;
         } else if (direction === "up") {
-            x -= size;
+            y -= size;
         } else if (direction === "down") {
-            x += size;
+            y += size;
         }
         return {x, y};
+    },
+    emitEvent(name, detail) {
+        const event = new CustomEvent(name,{ detail });
+        document.dispatchEvent(event);
     }
 }

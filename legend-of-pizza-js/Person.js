@@ -45,10 +45,18 @@ class Person extends GameObject {
     }
     updatePosition() {
      
-            const [property, change] = this.directionUpdate[this.direction];
-            this[property] += change;
-            this.movingProgressRemaining -= 1;
-        
+        const [property, change] = this.directionUpdate[this.direction];
+        this[property] += change;
+        this.movingProgressRemaining -= 1;
+
+        if (this.movingProgressRemaining === 0) {
+            // we finished the walk
+            utils.emitEvent("PersonWalkingComplete", {
+                whoId: this.id
+            })
+            // allow us to move again
+            // TODO: allow us to move again
+        }
     }
     updateSprite() {
 
