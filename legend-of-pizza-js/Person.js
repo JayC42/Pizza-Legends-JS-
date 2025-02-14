@@ -20,7 +20,7 @@ class Person extends GameObject {
             // More cases for starting to walk will come here
 
             // Keyboard controls
-            if (this.isPlayerControlled && state.arrow) {
+            if (!state.map.isCutscenePlaying && this.isPlayerControlled && state.arrow) {
                 this.startBehavior(state, {
                     type: "walk",
                     direction: state.arrow
@@ -36,11 +36,23 @@ class Person extends GameObject {
         if (behavior.type === "walk") {
             // stop here if space is not free
             if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
+                behavior.retry && setTimeout(() => {
+                    this.startBehavior(state, behavior)
+                }, 10); 
+                
                 return;
             }
             // ready to walk
             state.map.moveWall(this.x, this.y, this.direction);
             this.movingProgressRemaining = 16;
+            this.updateSprite(state);
+        }
+        if (behavior.type === "stand") {
+            setTimeout(() => {
+                utils.emitEvent("PersonStandComplete", {
+                    whoId: this.id
+                })
+            }, behavior.time);
         }
     }
     updatePosition() {
