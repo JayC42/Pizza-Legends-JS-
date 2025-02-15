@@ -13,15 +13,6 @@ class OverworldEvent {
             direction: this.event.direction, 
             time: this.event.time,
         })
-
-        // Set up a handler to complete when correct person is done walking, then resolve the event
-        // const completehandler = e => {
-        //     if (e.detail.whoId === this.event.who) {
-        //         document.removeEventListener("PersonWalkingComplete", completehandler);
-        //         resolve();
-        //     }
-        // }
-        // document.addEventListener("PersonWalkingComplete", completehandler);
     }
 
     walk(resolve) {
@@ -35,13 +26,21 @@ class OverworldEvent {
         })
 
         // Set up a handler to complete when correct person is done walking, then resolve the event
-        const completehandler = e => {
+        const completeHandler = e => {
             if (e.detail.whoId === this.event.who) {
-                document.removeEventListener("PersonWalkingComplete", completehandler);
+                document.removeEventListener("PersonWalkingComplete", completeHandler);
                 resolve();
             }
         }
-        document.addEventListener("PersonWalkingComplete", completehandler);
+        document.addEventListener("PersonWalkingComplete", completeHandler);
+    }
+    
+    textMessage(resolve) {
+        const message = new TextMessage({
+            text: this.event.text,
+            onComplete: () => resolve(),
+        })
+        message.init(document.querySelector(".game-container"));
     }
 
     init() {
